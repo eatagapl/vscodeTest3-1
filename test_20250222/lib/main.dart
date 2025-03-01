@@ -82,6 +82,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   double plotSlope = 1.0; // Default plotSlope to 1.0
@@ -99,6 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       themeNotifier.value = ThemeMode.dark;
     }
+  }
+
+  void _onImageChanged(String newImage) {
+    setState(() {
+      selectedImage = newImage;
+    });
   }
 
   @override
@@ -127,6 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
             initialSlope: plotSlope,
+            selectedImage: selectedImage,
+            onImageChanged: _onImageChanged,
           ),
           PlotPage(plotSlope: plotSlope),
           ImagePage(selectedImage: selectedImage),
@@ -163,8 +172,15 @@ class _MyHomePageState extends State<MyHomePage> {
 class HomePage extends StatefulWidget {
   final ValueChanged<double> onSlopeChanged;
   final double initialSlope;
+  final String selectedImage;
+  final ValueChanged<String> onImageChanged;
 
-  const HomePage({required this.onSlopeChanged, required this.initialSlope});
+  const HomePage({
+    required this.onSlopeChanged,
+    required this.initialSlope,
+    required this.selectedImage,
+    required this.onImageChanged,
+  });
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -172,7 +188,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late TextEditingController _controller;
-  String selectedImage = 'A'; // Default selected image option
 
   @override
   void initState() {
@@ -225,10 +240,10 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: 100,
                   child: DropdownButton<String>(
-                    value: selectedImage,
+                    value: widget.selectedImage,
                     onChanged: (String? newValue) {
                       setState(() {
-                        selectedImage = newValue!;
+                        widget.onImageChanged(newValue!);
                       });
                     },
                     items: <String>['A', 'B', 'C']
