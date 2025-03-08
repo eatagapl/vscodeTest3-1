@@ -10,14 +10,14 @@ class BrainScreen extends StatelessWidget {
     String imagePath;
     switch (selectedImage) {
       case 'B':
-        imagePath = 'assets/orange.jpg';
+        imagePath = 'assets/display/2dis.png';
         break;
       case 'C':
-        imagePath = 'assets/pear.png';
+        imagePath = 'assets/display/3dis.png';
         break;
       case 'A':
       default:
-        imagePath = 'assets/apple.jpg';
+        imagePath = 'assets/display/1dis.png';
         break;
     }
 
