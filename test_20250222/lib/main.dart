@@ -6,7 +6,7 @@ import 'plotScene.dart'; // Import the new plotScene.dart file
 void main() {
   runApp(const MyApp());
 }
-//testing 123
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -85,7 +85,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   double plotSlope = 1.0; // Default plotSlope to 1.0
-  String selectedImage = 'A'; // Default selected image option
+  int imgNum = 1; // Default imgNum to 1
 
   void _onItemTapped(int index) {
     setState(() {
@@ -99,12 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       themeNotifier.value = ThemeMode.dark;
     }
-  }
-
-  void _onImageChanged(String newImage) {
-    setState(() {
-      selectedImage = newImage;
-    });
   }
 
   @override
@@ -133,11 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
             initialSlope: plotSlope,
-            selectedImage: selectedImage,
-            onImageChanged: _onImageChanged,
           ),
           PlotScene(plotSlope: plotSlope), // Use PlotScene instead of PlotPage
-          BrainScreen(selectedImage: selectedImage), // Use BrainScreen instead of ImagePage
+          BrainScreen(initialImgNum: imgNum), // Use BrainScreen instead of ImagePage
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -171,14 +163,10 @@ class _MyHomePageState extends State<MyHomePage> {
 class HomePage extends StatefulWidget {
   final ValueChanged<double> onSlopeChanged;
   final double initialSlope;
-  final String selectedImage;
-  final ValueChanged<String> onImageChanged;
 
   const HomePage({
     required this.onSlopeChanged,
     required this.initialSlope,
-    required this.selectedImage,
-    required this.onImageChanged,
   });
 
   @override
@@ -224,34 +212,6 @@ class _HomePageState extends State<HomePage> {
                       }
                       widget.onSlopeChanged(slope);
                     },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'Image: ',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: DropdownButton<String>(
-                    value: widget.selectedImage,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        widget.onImageChanged(newValue!);
-                      });
-                    },
-                    items: <String>['A', 'B', 'C']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
                   ),
                 ),
               ],
