@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:image/image.dart' as img;
+import 'dart:ui' as ui;
 
 class BrainScreen extends StatefulWidget {
   final int initialImgNum;
@@ -17,7 +17,7 @@ class _BrainScreenState extends State<BrainScreen> {
   final TransformationController _transformationController = TransformationController();
   final double dotSize = 4.0; // Size of the dot
   int grayscaleValue = 0; // Grayscale value of the pixel at the dot position
-  img.Image? _image;
+  ui.Image? _image;
 
   @override
   void initState() {
@@ -28,9 +28,11 @@ class _BrainScreenState extends State<BrainScreen> {
 
   Future<void> _loadImage() async {
     final ByteData data = await DefaultAssetBundle.of(context).load('assets/display/${imgNum}dis.png');
-    final List<int> bytes = data.buffer.asUint8List();
+    final Uint8List bytes = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
     setState(() {
-      _image = img.decodeImage(bytes);
+      _image = frameInfo.image;
       if (_image != null) {
         debugPrint('Image loaded successfully');
         _updateGrayscaleValue();
@@ -40,26 +42,32 @@ class _BrainScreenState extends State<BrainScreen> {
     });
   }
 
-  void _updateGrayscaleValue() {
+  Future<void> _updateGrayscaleValue() async {
     if (_image != null) {
       // Apply the inverse of the current transformation to the dot position
       final Matrix4 matrix = _transformationController.value.clone()..invert();
-      final Offset transformedDotPosition = MatrixUtils.transformPoint(matrix, dotPosition + Offset(dotSize / 2, dotSize / 2));
+      final Offset transformedDotPosition = MatrixUtils.transformPoint(matrix, dotPosition);
 
       final int x = transformedDotPosition.dx.toInt();
       final int y = transformedDotPosition.dy.toInt();
       if (x >= 0 && x < _image!.width && y >= 0 && y < _image!.height) {
-        final int pixel = _image!.getPixel(x, y);
-        final int r = img.getRed(pixel);
-        final int g = img.getGreen(pixel);
-        final int b = img.getBlue(pixel);
-        final int grayscale = ((r + g + b) / 3).toInt();
-        setState(() {
-          grayscaleValue = grayscale;
-        });
-        debugPrint('Grayscale Value: $grayscaleValue');
-        debugPrint('Dot Position: (${dotPosition.dx.toStringAsFixed(2)}, ${dotPosition.dy.toStringAsFixed(2)})');
-        debugPrint('Transformed Dot Position: (${transformedDotPosition.dx.toStringAsFixed(2)}, ${transformedDotPosition.dy.toStringAsFixed(2)})');
+        final ByteData? byteData = await _image!.toByteData(format: ui.ImageByteFormat.rawRgba);
+        if (byteData != null) {
+          final int pixelOffset = (y * _image!.width + x) * 4;
+          final int r = byteData.getUint8(pixelOffset);
+          final int g = byteData.getUint8(pixelOffset + 1);
+          final int b = byteData.getUint8(pixelOffset + 2);
+          final int grayscale = ((r + g + b) / 3).toInt();
+          setState(() {
+            grayscaleValue = grayscale;
+          });
+          debugPrint('Grayscale Value: $grayscaleValue');
+          debugPrint('Red: $r, Green: $g, Blue: $b');
+          debugPrint('Dot Position: (${dotPosition.dx.toStringAsFixed(2)}, ${dotPosition.dy.toStringAsFixed(2)})');
+          debugPrint('Transformed Dot Position: (${transformedDotPosition.dx.toStringAsFixed(2)}, ${transformedDotPosition.dy.toStringAsFixed(2)})');
+        } else {
+          debugPrint('Failed to get byte data from image');
+        }
       } else {
         debugPrint('Dot position is out of image bounds');
       }

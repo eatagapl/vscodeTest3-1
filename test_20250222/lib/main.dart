@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue, // Change selected item color to blue
+        selectedItemColor: Colors.blue,
         onTap: _onItemTapped,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -181,6 +181,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _controller = TextEditingController(text: widget.initialSlope.toString());
   }
+
+  //test comment lskdfjsdlfkjfasdlkj;
 
   @override
   Widget build(BuildContext context) {
