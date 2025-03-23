@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Cerebellum</key>
+	<real>0.009762</real>
+	<key>LSO</key>
+	<real>0.017923</real>
+	<key>MNTB</key>
+	<real>0.018157</real>
+	<key>Olfactory</key>
+	<real>0.014884</real>
+	<key>PPT</key>
+	<real>0.015264</real>
+	<key>SC</key>
+	<real>0.013912</real>
+	<key>VNTB</key>
+	<real>0.019958</real>
+</dict>
+</plist>
