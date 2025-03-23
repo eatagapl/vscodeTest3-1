@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Add this import for date formatting
 import 'brainScreen.dart'; // Import the new brainScreen.dart file
 import 'plotScene.dart'; // Import the new plotScene.dart file
+import 'utils/protein_parser.dart';
 
 void main() {
   runApp(const MyApp());
@@ -83,9 +84,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Ensure this is set to 0 by default
   double plotSlope = 1.0; // Default plotSlope to 1.0
   int imgNum = 1; // Default imgNum to 1
+  String? selectedUser; // Add a variable to store the selected user
 
   void _onItemTapped(int index) {
     setState(() {
@@ -120,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: IndexedStack(
         index: _selectedIndex,
         children: <Widget>[
-          HomePage(
+          HomePage( // Ensure HomePage is the first widget in the IndexedStack
             onSlopeChanged: (slope) {
               setState(() {
                 plotSlope = slope;
@@ -156,6 +158,23 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _toggleTheme,
         child: Icon(themeNotifier.value == ThemeMode.dark ? Icons.nightlight_round : Icons.wb_sunny),
       ),
+      persistentFooterButtons: [
+        DropdownButton<String>(
+          value: selectedUser,
+          hint: const Text('Select User'),
+          items: <String>['User1', 'User2', 'User3'].map((String user) {
+            return DropdownMenuItem<String>(
+              value: user,
+              child: Text(user),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedUser = newValue;
+            });
+          },
+        ),
+      ],
     );
   }
 }
@@ -175,6 +194,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late TextEditingController _controller;
+  String? selectedUser; // Revert to using a static dropdown menu for user selection
 
   @override
   void initState() {
@@ -215,6 +235,22 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 16), // Add spacing between the slope field and dropdown
+            DropdownButton<String>(
+              value: selectedUser,
+              hint: const Text('Select Protein Type'),
+              items: <String>['User1', 'User2', 'User3'].map((String user) {
+                return DropdownMenuItem<String>(
+                  value: user,
+                  child: Text(user),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedUser = newValue;
+                });
+              },
             ),
           ],
         ),

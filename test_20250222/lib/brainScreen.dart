@@ -13,7 +13,7 @@ class BrainScreen extends StatefulWidget {
 
 class _BrainScreenState extends State<BrainScreen> {
   late int imgNum;
-  Offset dotPosition = Offset(300, 400); // Initial position of the dot
+  Offset dotPosition = Offset(300, 400); //remove
   final TransformationController _transformationController = TransformationController();
   final double dotSize = 4.0; // Size of the dot
   int grayscaleValue = 0; // Grayscale value of the pixel at the dot position
