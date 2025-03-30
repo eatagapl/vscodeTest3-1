@@ -103,6 +103,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _printProteins() async {
+    final proteins = await ProteinParser.parseProteins();
+    print(proteins); // Prints the parsed array to the console
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get today's date and time
@@ -173,6 +178,10 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedUser = newValue;
             });
           },
+        ),
+        ElevatedButton(
+          onPressed: _printProteins,
+          child: const Text('Print Proteins'),
         ),
       ],
     );
