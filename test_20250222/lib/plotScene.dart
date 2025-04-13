@@ -5,7 +5,7 @@ import 'dart:math'; // Add this import for logarithmic function
 class PlotScene extends StatelessWidget {
   final double plotSlope;
 
-  const PlotScene({required this.plotSlope});
+  const PlotScene({super.key, required this.plotSlope});
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 class BrainScreen extends StatefulWidget {
   final int initialImgNum;
 
-  const BrainScreen({required this.initialImgNum});
+  const BrainScreen({super.key, required this.initialImgNum});
 
   @override
   _BrainScreenState createState() => _BrainScreenState();

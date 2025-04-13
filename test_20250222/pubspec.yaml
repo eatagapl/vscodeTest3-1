@@ -33,6 +33,7 @@ dependencies:
   fl_chart: ^0.40.0 # Update to the latest version
   intl: ^0.17.0
   image: ^3.0.1
+  xml: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,7 @@ flutter:
     - assets/display/1dis.png
     - assets/display/2dis.png
     - assets/display/3dis.png
+    - xmlfiles/ProteinsThresholds.xml
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
