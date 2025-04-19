@@ -5,6 +5,7 @@ import 'plotScene.dart'; // Import the new plotScene.dart file
 import 'xmlparser.dart'; // Import the XMLParser
 import 'about.dart'; // Import the About screen
 import 'manual.dart'; // Import the Manual screen
+import 'globalVariables.dart'; // Import the global variables
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized
