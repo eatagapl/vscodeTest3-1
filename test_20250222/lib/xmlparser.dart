@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart'; // For rootBundle
 import 'package:xml/xml.dart';
+import 'globalVariables.dart';
 
 class XMLParser {
   static Future<List<Map<String, String>>?> parseProteinsThresholds() async {
@@ -35,7 +36,6 @@ class XMLParser {
 }
 
 // Global data structure to store protein data
-final Map<String, Map<String, String>> proteinData = {};
 
 Future<void> populateProteinData() async {
   try {

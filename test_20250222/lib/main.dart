@@ -3,6 +3,8 @@ import 'package:intl/intl.dart'; // Add this import for date formatting
 import 'brainScreen.dart'; // Import the new brainScreen.dart file
 import 'plotScene.dart'; // Import the new plotScene.dart file
 import 'xmlparser.dart'; // Import the XMLParser
+import 'globalVariables.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized
@@ -11,8 +13,8 @@ void main() async {
 }
 
 // Global variables for protein name and activation percentage
-String proteinName = "ChR2";
-String activationPercentage = "90%";
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
