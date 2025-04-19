@@ -98,19 +98,51 @@ class _BrainScreenState extends State<BrainScreen> {
     final RenderBox box = context.findRenderObject() as RenderBox;
     final Offset localOffset = box.globalToLocal(details.globalPosition);
 
-    // Apply the inverse of the current transformation to the local offset
-    final Matrix4 matrix = _transformationController.value.clone()..invert();
-    final Offset transformedOffset = MatrixUtils.transformPoint(matrix, localOffset);
+    // Get the size of the displayed image container
+    final double containerWidth = box.size.width;
+    final double containerHeight = box.size.height;
 
-    // Check if the double-tap is within the bounds of the image
-    if (transformedOffset.dx >= 0 &&
-        transformedOffset.dx <= box.size.width &&
-        transformedOffset.dy >= 0 &&
-        transformedOffset.dy <= box.size.height) {
+    // Get the size of the displayed image (accounting for BoxFit.contain)
+    final double imageAspectRatio = 4096 / 4096; // Native image aspect ratio
+    final double containerAspectRatio = containerWidth / containerHeight;
+
+    double displayedWidth, displayedHeight;
+    if (imageAspectRatio > containerAspectRatio) {
+      // Image is constrained by width
+      displayedWidth = containerWidth;
+      displayedHeight = containerWidth / imageAspectRatio;
+    } else {
+      // Image is constrained by height
+      displayedWidth = containerHeight * imageAspectRatio;
+      displayedHeight = containerHeight;
+    }
+
+    // Calculate the offset of the image within the container
+    final double offsetX = (containerWidth - displayedWidth) / 2;
+    final double offsetY = (containerHeight - displayedHeight) / 2;
+
+    // Check if the click is within the displayed image
+    final double relativeX = localOffset.dx - offsetX;
+    final double relativeY = localOffset.dy - offsetY;
+
+    if (relativeX >= 0 &&
+        relativeX <= displayedWidth &&
+        relativeY >= 0 &&
+        relativeY <= displayedHeight) {
+      // Map the relative position to the image's native resolution
+      final double x = (relativeX / displayedWidth) * 4096;
+      final double y = (relativeY / displayedHeight) * 4096;
+
+      // Clamp the position to ensure it stays within the image bounds
+      final double clampedX = x.clamp(0, 4096);
+      final double clampedY = y.clamp(0, 4096);
+
       setState(() {
-        dotPosition = transformedOffset - Offset(dotSize / 2, dotSize / 2);
+        dotPosition = Offset(clampedX, clampedY); // Update the dot position in the image's native resolution
       });
       _updateGrayscaleValue();
+    } else {
+      debugPrint('Cursor position is outside the displayed image');
     }
   }
 
@@ -130,22 +162,45 @@ class _BrainScreenState extends State<BrainScreen> {
                 boundaryMargin: const EdgeInsets.all(20.0),
                 minScale: 0.1,
                 maxScale: 15.0,
-                child: Stack(
-                  children: [
-                    Image.asset(imagePath),
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 300),
-                      left: dotPosition.dx,
-                      top: dotPosition.dy,
-                      child: IgnorePointer(
-                        child: Image.asset(
-                          'assets/dot.png',
-                          width: dotSize, // 5 times smaller
-                          height: dotSize,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Get the size of the displayed image container
+                    final double containerWidth = constraints.maxWidth;
+                    final double containerHeight = constraints.maxHeight;
+
+                    return Stack(
+                      children: [
+                        Image.asset(
+                          imagePath,
+                          fit: BoxFit.contain,
+                          width: containerWidth,
+                          height: containerHeight,
                         ),
-                      ),
-                    ),
-                  ],
+                        AnimatedBuilder(
+                          animation: _transformationController,
+                          builder: (context, child) {
+                            // Scale the dot position to the displayed image's dimensions
+                            final double scaledX = (dotPosition.dx / 4096) * containerWidth;
+                            final double scaledY = (dotPosition.dy / 4096) * containerHeight;
+
+                            return AnimatedPositioned(
+                              duration: const Duration(milliseconds: 300), // Animation duration
+                              curve: Curves.easeInOut, // Animation curve
+                              left: scaledX - dotSize / 2, // Center the dot
+                              top: scaledY - dotSize / 2,  // Center the dot
+                              child: IgnorePointer(
+                                child: Image.asset(
+                                  'assets/dot.png',
+                                  width: dotSize,
+                                  height: dotSize,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

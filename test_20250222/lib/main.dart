@@ -3,8 +3,8 @@ import 'package:intl/intl.dart'; // Add this import for date formatting
 import 'brainScreen.dart'; // Import the new brainScreen.dart file
 import 'plotScene.dart'; // Import the new plotScene.dart file
 import 'xmlparser.dart'; // Import the XMLParser
-import 'globalVariables.dart';
-
+import 'about.dart'; // Import the About screen
+import 'manual.dart'; // Import the Manual screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized
@@ -95,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // Ensure this is set to 0 by default
   double plotSlope = 1.0; // Default plotSlope to 1.0
   int imgNum = 1; // Default imgNum to 1
-  String? selectedUser; // Add a variable to store the selected user
 
   void _onItemTapped(int index) {
     setState(() {
@@ -140,6 +139,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           PlotScene(plotSlope: plotSlope), // Use PlotScene instead of PlotPage
           BrainScreen(initialImgNum: imgNum), // Use BrainScreen instead of ImagePage
+          AboutScreen(), // Add the About screen
+          ManualScreen(), // Add the Manual screen
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -155,6 +156,14 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.image),
             label: 'Image',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Manual',
           ),
         ],
         currentIndex: _selectedIndex,
