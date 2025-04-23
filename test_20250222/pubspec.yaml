@@ -67,6 +67,10 @@ flutter:
     - assets/display/3dis.png
     - xmlfiles/ProteinsThresholds.xml
     - assets/manual.pdf
+    - assets/stereotaxi.png
+    - assets/in vitro.png
+    - assets/hexapod.png
+    - assets/spike sorting.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
