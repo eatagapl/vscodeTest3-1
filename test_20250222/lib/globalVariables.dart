@@ -11,8 +11,8 @@ double FiberOpticalPowerTo = 100.0;
 double FiberCoreDiameter = 100.0;
 double DiamMM = FiberCoreDiameter / 1000.0;
 
-double grayscale = -1.0;
-double ScatteringCoefficient = 0.018157 + log(3082.0 /grayscale/ 300.0); // Ensure grayscale is handled elsewhere
+double grayscale = 65536.0; // Example grayscale value, ensure this is set appropriately in your application
+//double ScatteringCoefficient = 0.018157 + log(3082.0 /grayscale/ 300.0); // Ensure grayscale is handled elsewhere
 double doubleFromPercent = 5.5;
 
 int NeuralTargetIndex = 0;
@@ -22,6 +22,8 @@ List<int> ExposureTimes = [
   91, 91, 81, 101, 91, 91, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 
   91, 91, 81, 81, 81, 81, 91, 91
 ];
+
+int loadedImageNum = 1;
 
 int percentageIndex = 0;
 

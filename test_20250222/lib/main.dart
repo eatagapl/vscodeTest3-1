@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
               bodyMedium: TextStyle(color: Colors.black),
             ),
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white,
-              iconTheme: IconThemeData(color: Colors.black),
-              titleTextStyle: TextStyle(color: Colors.black, fontSize: 20), // Fixed font size
+              backgroundColor: Colors.blue, // Set app bar color to blue
+              iconTheme: IconThemeData(color: Colors.white), // Set icon color to white
+              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // Set title text color to white
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.blue, // Set FAB background color to blue
             ),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
               backgroundColor: Colors.white,
@@ -60,11 +60,12 @@ class MyApp extends StatelessWidget {
               bodyMedium: TextStyle(color: Colors.white),
             ),
             appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF23272A), // Discord-like dark background
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // Fixed font size
+              backgroundColor: Colors.blue, // Set app bar color to blue in dark mode
+              iconTheme: IconThemeData(color: Colors.white), // Set icon color to white
+              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // Set title text color to white
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.blue, // Set FAB background color to blue in dark mode
             ),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
               backgroundColor: Color(0xFF23272A), // Discord-like dark background
@@ -94,7 +95,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // Ensure this is set to 0 by default
-  double plotSlope = 1.0; // Default plotSlope to 1.0
+  
   int imgNum = 1; // Default imgNum to 1
 
   void _onItemTapped(int index) {
@@ -133,12 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
           HomePage( // Ensure HomePage is the first widget in the IndexedStack
             onSlopeChanged: (slope) {
               setState(() {
-                plotSlope = slope;
+                
               });
             },
-            initialSlope: plotSlope,
+            
           ),
-          PlotScene(plotSlope: plotSlope), // Use PlotScene instead of PlotPage
+          PlotScene(), // Use PlotScene instead of PlotPage
           BrainScreen(initialImgNum: imgNum), // Use BrainScreen instead of ImagePage
           AboutScreen(), // Add the About screen
           ManualScreen(), // Add the Manual screen
@@ -172,22 +173,26 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleTheme,
-        child: Icon(themeNotifier.value == ThemeMode.dark ? Icons.nightlight_round : Icons.wb_sunny),
-      ),
-      persistentFooterButtons: [],
+      floatingActionButton: _selectedIndex == 0 // Show FAB only on the main page
+          ? FloatingActionButton(
+              onPressed: _toggleTheme,
+              child: Icon(
+                themeNotifier.value == ThemeMode.dark ? Icons.nightlight_round : Icons.wb_sunny,
+                color: Colors.white, // Set the icon color to white
+              ),
+            )
+          : null, // Hide FAB on other pages
     );
   }
 }
 
 class HomePage extends StatefulWidget {
   final ValueChanged<double> onSlopeChanged;
-  final double initialSlope;
+
 
   const HomePage({super.key, 
     required this.onSlopeChanged,
-    required this.initialSlope,
+  
   });
 
   @override
@@ -200,6 +205,7 @@ void printProteinThreshold() {
     print('Activation percentage: $activationPercentage');
     print(proteinData[proteinName]![activationPercentage]);
     //print('Value: $proteinData[$proteinName]![$activationPercentage]');
+
   }
 }
 
@@ -212,7 +218,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialSlope.toString());
+   
     _loadProteinOptions(); // Load protein options from XML
   }
 
@@ -255,6 +261,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onChanged: (value) {
                       // Handle first optical power input
+                      FiberOpticalPowerFrom = double.tryParse(value) ?? 1.0; // Default to 1.0 if parsing fails
                     },
                   ),
                 ),
@@ -269,6 +276,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onChanged: (value) {
                       // Handle second optical power input
+                      FiberOpticalPowerTo = double.tryParse(value) ?? 100.0; // Default to 1.0 if parsing fails
                     },
                   ),
                 ),
@@ -298,6 +306,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onChanged: (value) {
                       // Handle Fiber Core Diameter input
+                      FiberCoreDiameter = double.tryParse(value) ?? 100.0;
+                      DiamMM = FiberCoreDiameter / 1000.0; // Convert to mm
+                      
                     },
                   ),
                 ),
@@ -320,6 +331,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   selectedUser = newValue;
                   proteinName = newValue ?? "ChR2"; // Update global proteinName
+                  doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
                   printProteinThreshold(); // Print the threshold value
                 });
               },
@@ -341,6 +353,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   selectedActivation = newValue;
                   activationPercentage = newValue ?? "90%"; // Update global activationPercentage
+                  doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
                   printProteinThreshold(); // Print the threshold value
                 });
               },

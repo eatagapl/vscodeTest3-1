@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
         crossAxisSpacing: 8.0, // Space between columns
         mainAxisSpacing: 8.0, // Space between rows
         padding: const EdgeInsets.all(8.0),
-        childAspectRatio: 0.6, // Adjusted to make buttons longer rectangles
+        childAspectRatio: 0.65, // Adjusted to make buttons longer rectangles
         children: [
           // Button 1
           GestureDetector(
