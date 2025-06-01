@@ -37,10 +37,8 @@ class PlotScene extends StatelessWidget {
       double y = DiamMM; // Replace with your calculation for y
 
       double laserInt = x / fiberSquared;
-      //print('Laser Intensity at $x mW: $laserInt');
       double penetration = -log(proteinThreshold / laserInt) / scattCoef;
       y = penetration;
-      
 
       return FlSpot(x.toDouble(), y);
     });
@@ -49,6 +47,9 @@ class PlotScene extends StatelessWidget {
     double maxY = spots.map((spot) => spot.y).reduce(max);
     // Round maxY to the nearest integer that allows for 10 even increments
     maxY = (maxY / 10).ceil() * 10;
+
+    // Set minY to 90% of the first y-value
+    double minY = spots.isNotEmpty ? spots.first.y * 0.9 : 0;
 
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -160,7 +161,7 @@ class PlotScene extends StatelessWidget {
                 // },
                 handleBuiltInTouches: true, // Enable built-in touch handling
               ),
-              minY: 0,
+              minY: minY,
               maxY: maxY, // Adjust the y-axis range to be slightly above the highest y-value
             ),
           ),
