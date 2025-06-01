@@ -22,7 +22,7 @@ class PlotScene extends StatelessWidget {
       );
     }
 
-    double Ipnew = 65536 * (101.0 / ExposureTimes[loadedImageNum - 1]);
+    double Ipnew = grayscale * (101.0 / ExposureTimes[loadedImageNum - 1]);
     double fiberSquared = (pi / 4) * DiamMM * DiamMM; 
     double scattCoef = 0.018157 + (1 / 300) * log(3082.0 / Ipnew);
     double proteinThreshold = doubleFromPercent;

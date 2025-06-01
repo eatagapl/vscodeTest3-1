@@ -218,7 +218,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-   
     _loadProteinOptions(); // Load protein options from XML
   }
 
@@ -237,128 +236,133 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Enter Fiber Optical Power (mW):',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 16), // Consistent spacing between rows
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 175,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: '1', // Filler text
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // Dismiss keyboard when tapping outside
+      },
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Enter Fiber Optical Power (mW):',
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 16), // Consistent spacing between rows
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 175,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '1', // Filler text
+                      ),
+                      onChanged: (value) {
+                        // Handle first optical power input
+                        FiberOpticalPowerFrom = double.tryParse(value) ?? 1.0; // Default to 1.0 if parsing fails
+                      },
                     ),
-                    onChanged: (value) {
-                      // Handle first optical power input
-                      FiberOpticalPowerFrom = double.tryParse(value) ?? 1.0; // Default to 1.0 if parsing fails
-                    },
                   ),
-                ),
-                const SizedBox(width: 16), // Spacing between the two text fields
-                SizedBox(
-                  width: 175,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: '100', // Filler text
+                  const SizedBox(width: 16), // Spacing between the two text fields
+                  SizedBox(
+                    width: 175,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '100', // Filler text
+                      ),
+                      onChanged: (value) {
+                        // Handle second optical power input
+                        FiberOpticalPowerTo = double.tryParse(value) ?? 100.0; // Default to 1.0 if parsing fails
+                      },
                     ),
-                    onChanged: (value) {
-                      // Handle second optical power input
-                      FiberOpticalPowerTo = double.tryParse(value) ?? 100.0; // Default to 1.0 if parsing fails
-                    },
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 60), // Consistent spacing between rows
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'Enter Fiber Core Diameter (um):',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8), // Add spacing between the label and the text field
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 350,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: '100', // Filler text
+                ],
+              ),
+              const SizedBox(height: 60), // Consistent spacing between rows
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Enter Fiber Core Diameter (um):',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8), // Add spacing between the label and the text field
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 350,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '100', // Filler text
+                      ),
+                      onChanged: (value) {
+                        // Handle Fiber Core Diameter input
+                        FiberCoreDiameter = double.tryParse(value) ?? 100.0;
+                        DiamMM = FiberCoreDiameter / 1000.0; // Convert to mm
+                        
+                      },
                     ),
-                    onChanged: (value) {
-                      // Handle Fiber Core Diameter input
-                      FiberCoreDiameter = double.tryParse(value) ?? 100.0;
-                      DiamMM = FiberCoreDiameter / 1000.0; // Convert to mm
-                      
-                    },
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 60), // Consistent spacing between rows
-            DropdownButton<String>(
-              value: selectedUser,
-              hint: const Text('Select Protein Type'),
-              items: proteinOptions.map((String protein) {
-                return DropdownMenuItem<String>(
-                  value: protein,
-                  child: SizedBox(
-                    width: 350, // Match the width of the dropdown menu
-                    child: Text(protein),
-                  ),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedUser = newValue;
-                  proteinName = newValue ?? "ChR2"; // Update global proteinName
-                  doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
-                  printProteinThreshold(); // Print the threshold value
-                });
-              },
-            ),
-            const SizedBox(height: 60), // Consistent spacing between rows
-            DropdownButton<String>(
-              value: selectedActivation,
-              hint: const Text('Select Activation Percentage'),
-              items: <String>['90%', '50%', '10%'].map((String percentage) {
-                return DropdownMenuItem<String>(
-                  value: percentage,
-                  child: SizedBox(
-                    width: 350, // Match the width of the protein dropdown
-                    child: Text(percentage),
-                  ),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedActivation = newValue;
-                  activationPercentage = newValue ?? "90%"; // Update global activationPercentage
-                  doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
-                  printProteinThreshold(); // Print the threshold value
-                });
-              },
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 60), // Consistent spacing between rows
+              DropdownButton<String>(
+                value: selectedUser,
+                hint: const Text('Select Protein Type'),
+                items: proteinOptions.map((String protein) {
+                  return DropdownMenuItem<String>(
+                    value: protein,
+                    child: SizedBox(
+                      width: 350, // Match the width of the dropdown menu
+                      child: Text(protein),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedUser = newValue;
+                    proteinName = newValue ?? "ChR2"; // Update global proteinName
+                    doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
+                    printProteinThreshold(); // Print the threshold value
+                  });
+                },
+              ),
+              const SizedBox(height: 60), // Consistent spacing between rows
+              DropdownButton<String>(
+                value: selectedActivation,
+                hint: const Text('Select Activation Percentage'),
+                items: <String>['90%', '50%', '10%'].map((String percentage) {
+                  return DropdownMenuItem<String>(
+                    value: percentage,
+                    child: SizedBox(
+                      width: 350, // Match the width of the protein dropdown
+                      child: Text(percentage),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedActivation = newValue;
+                    activationPercentage = newValue ?? "90%"; // Update global activationPercentage
+                    doubleFromPercent = double.tryParse(proteinData[proteinName]![activationPercentage] ?? '0') ?? 0.0; // Update global doubleFromPercent
+                    printProteinThreshold(); // Print the threshold value
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

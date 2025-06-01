@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'globalVariables.dart'; 
 
 class BrainScreen extends StatefulWidget {
   final int initialImgNum;
@@ -57,10 +58,10 @@ class _BrainScreenState extends State<BrainScreen> {
           final int r = byteData.getUint8(pixelOffset);
           final int g = byteData.getUint8(pixelOffset + 1);
           final int b = byteData.getUint8(pixelOffset + 2);
-          final int grayscale = ((r + g + b) / 3).toInt();
-          setState(() {
-            grayscaleValue = grayscale;
-          });
+          final double grayscaleValue = ((r + g + b) / 3);
+          
+          grayscale = grayscaleValue; // Update the state with the new grayscale value
+
           debugPrint('Grayscale Value: $grayscaleValue');
           debugPrint('Red: $r, Green: $g, Blue: $b');
           debugPrint('Dot Position: (${dotPosition.dx.toStringAsFixed(2)}, ${dotPosition.dy.toStringAsFixed(2)})');
